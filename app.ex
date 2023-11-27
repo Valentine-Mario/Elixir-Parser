@@ -3,6 +3,7 @@
 # [1, 3, :abc]
 # "hi"
 # 'hello\u348909\n'
-"hello\n\n\u1234"
+"hello\"\n\n\u123467"
 label = "hello"
 label
+'hj\'\\th'

@@ -12,10 +12,24 @@ number = @{
     ~ ("." ~ ASCII_DIGIT*)?
     ~ (^"e" ~ ("+"|"-")? ~ ASCII_DIGIT+)?
 }
-string = @{("'"| "\"") ~ ( ("''"| "\"\"") | (!("'"|"\"") ~ ANY) )* ~ ("'"|"\"")}
+string = ${"\"" ~ inner ~ "\""}
+inner = @{char*}
+char = {
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\"| "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4,})
+}
+
+single_quote_string= ${"'" ~ single_inner ~ "'"}
+single_inner = @{single_quote_char*}
+single_quote_char = {
+    !("\'"| "\\") ~ ANY
+    | "\\" ~ ("'" | "\\"| "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4,})
+}
+
 boolean = {"true"| "false"}
 atom = {":" ~ ident}
-
 
 //array types
 array= {
@@ -23,6 +37,6 @@ array= {
 }
 
 // //valid elixir expressions
-primitive = { number | string | boolean | atom | array}
+primitive = { number | string | boolean | atom | array | single_quote_string }
 expr = {primitive | assignment | ident}
 program= _{ SOI ~ expr* ~ EOI}
