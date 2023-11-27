@@ -1,0 +1,28 @@
+WHITESPACE= _{" "| "\t" | "\r"| "\n"}
+COMMENT = _{ "#" ~ (!"\n" ~ ANY)* }
+
+//variable identifier
+assignment = {ident ~ "=" ~ primitive}
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
+
+// //primitive type
+number = @{
+    "-"?
+    ~ ("0"| ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+    ~ ("." ~ ASCII_DIGIT*)?
+    ~ (^"e" ~ ("+"|"-")? ~ ASCII_DIGIT+)?
+}
+string = @{("'"| "\"") ~ ( ("''"| "\"\"") | (!("'"|"\"") ~ ANY) )* ~ ("'"|"\"")}
+boolean = {"true"| "false"}
+atom = {":" ~ ident}
+
+
+//array types
+array= {
+    "["~"]" | "[" ~ primitive ~ ("," ~ primitive)* ~ ","? ~"]"
+}
+
+// //valid elixir expressions
+primitive = { number | string | boolean | atom | array}
+expr = {primitive | assignment | ident}
+program= _{ SOI ~ expr* ~ EOI}
