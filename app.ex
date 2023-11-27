@@ -8,16 +8,4 @@
 # label
 # 'hj\'\\th'
 
-k="""
-hello
-this is
-a multi
-line string
-90
-"""
-
-# '''
-# this is another multiline
-# \'
-# string
-# '''
+k=nil

@@ -30,6 +30,7 @@ single_quote_char = {
 
 boolean = {"true"| "false"}
 atom = {":" ~ ident}
+null = {"nil"}
 
 //array types
 array= {
@@ -40,6 +41,9 @@ array= {
 primitive = { number 
     | string 
     | boolean 
-    | atom | array | single_quote_string  }
+    | atom 
+    | array 
+    | single_quote_string
+    | null  }
 expr = {primitive | assignment | ident}
 program= _{ SOI ~ expr* ~ EOI}
