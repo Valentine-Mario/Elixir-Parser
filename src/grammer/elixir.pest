@@ -37,6 +37,9 @@ array= {
 }
 
 // //valid elixir expressions
-primitive = { number | string | boolean | atom | array | single_quote_string }
+primitive = { number 
+    | string 
+    | boolean 
+    | atom | array | single_quote_string  }
 expr = {primitive | assignment | ident}
 program= _{ SOI ~ expr* ~ EOI}
