@@ -4,9 +4,17 @@ COMMENT = _{ "#" ~ (!"\n" ~ ANY)* }
 //verbs
 verbs = { "<>"| "|>"| ">"| "<" | "+" | "-" | "--" | "++" | "/"| "?" | "|"}
 
+reserver_words= {
+    ("end" | "defmodule" | "do"| 
+    "when" | "and" | "or" | "not" | "in" | "fn"|
+    "catch"| "rescue" | "after" | "else")
+    ~ (" "+|"="+)
+}
 //variable identifier
 assignment = {ident ~ "=" ~ types}
-ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")* }
+ident = @{ !reserver_words ~ 
+    (ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*) 
+}
 
 // //primitive type
 number = @{
@@ -32,7 +40,7 @@ single_quote_char = {
 }
 
 boolean = {"true"| "false"}
-atom = {":" ~ ident}
+atom = {":" ~ (ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*) }
 null = {"nil"}
 tuple= {
     "{"~"}"| "{" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~ "}"
