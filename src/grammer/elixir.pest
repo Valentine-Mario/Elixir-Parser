@@ -11,10 +11,9 @@ reserver_words= {
     ~ (" "+|"="+)
 }
 //variable identifier
-assignment = {(ident|atom) ~ "=" ~ types}
+assignment = {(ident|atom) ~ "=" ~ (types|ident)}
 var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
-ident = { !reserver_words ~ var_name
-}
+ident = { !reserver_words ~ var_name}
 
 // //primitive type
 number = @{
@@ -93,5 +92,5 @@ types = { number
     | arrow_first_map
     | colon_first_map
   }
-expr = {types | assignment | ident}
-program= _{ SOI ~ expr* ~ EOI}
+expr = { assignment | ident }
+program= _{ SOI ~ (expr|types)* ~ EOI}

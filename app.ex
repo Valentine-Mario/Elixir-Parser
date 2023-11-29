@@ -4,7 +4,7 @@
 # "hi"
 # 'hello\u348909\n'
 # "hello\"\n\n\u123467"
-label = "hello"
+# label = "hello"
 # label
 # 'hj\'\\th'
 
@@ -18,7 +18,7 @@ label = "hello"
 # %{"bc"=>12, b: 40, c: 400}
 # defmodule  do
 
-ender = :we
-ande =100
-k= :we
-:and
+# ender = :we
+# ande =100
+# # k= :we
+# :bbb = aa
