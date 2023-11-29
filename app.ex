@@ -15,7 +15,7 @@
 %{}
 %{abc | k => 33, "ab"=>10}
 
-
+%{"bc"=>12, b: 40, c: 400}
 defmodule  do
 
 end

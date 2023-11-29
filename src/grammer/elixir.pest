@@ -42,8 +42,8 @@ tuple= {
 arrow_map_item = {
     (ident|types)~ "=>" ~ (ident|types)
 }
-colon_map_item= {
-    (ident~":"|"%{}:"|"{}:") ~ (ident|types)
+colon_map_item= ${
+    (ident~":"|"%{}:"|"{}:") ~ " "+ ~ (ident|types)
 }
 colon_first_map = {
     "%{"~"}"|"%{" ~ (ident ~ verbs)? ~ (colon_map_item) ~ 
