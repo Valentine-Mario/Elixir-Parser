@@ -18,5 +18,7 @@ label = "hello"
 # %{"bc"=>12, b: 40, c: 400}
 # defmodule  do
 
-ender =100
-:and = 10
+ender = :we
+ande =100
+k= :we
+:and

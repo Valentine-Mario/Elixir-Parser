@@ -11,9 +11,9 @@ reserver_words= {
     ~ (" "+|"="+)
 }
 //variable identifier
-assignment = {ident ~ "=" ~ types}
-ident = @{ !reserver_words ~ 
-    (ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*) 
+assignment = {(ident|atom) ~ "=" ~ types}
+var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
+ident = { !reserver_words ~ var_name
 }
 
 // //primitive type
@@ -40,7 +40,7 @@ single_quote_char = {
 }
 
 boolean = {"true"| "false"}
-atom = {":" ~ (ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*) }
+atom = {":" ~ var_name }
 null = {"nil"}
 tuple= {
     "{"~"}"| "{" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~ "}"
