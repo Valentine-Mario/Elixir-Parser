@@ -1,9 +1,12 @@
 WHITESPACE= _{" "| "\t" | "\r"| "\n"}
 COMMENT = _{ "#" ~ (!"\n" ~ ANY)* }
 
+//verbs
+verbs = { "<>"| "|>"| ">"| "<" | "+" | "-" | "--" | "++" | "/"| "?" | "|"}
+
 //variable identifier
-assignment = {ident ~ "=" ~ primitive}
-ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
+assignment = {ident ~ "=" ~ types}
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")* }
 
 // //primitive type
 number = @{
@@ -23,7 +26,7 @@ char = {
 single_quote_string= ${"'" ~ single_inner ~ "'"}
 single_inner = @{single_quote_char*}
 single_quote_char = {
-    !("\'"| "\\") ~ ANY
+    |!("\'"| "\\") ~ ANY
     | "\\" ~ ("'" | "\\"| "/" | "b" | "f" | "n" | "r" | "t")
     | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4,})
 }
@@ -31,19 +34,56 @@ single_quote_char = {
 boolean = {"true"| "false"}
 atom = {":" ~ ident}
 null = {"nil"}
+tuple= {
+    "{"~"}"| "{" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~ "}"
+}
+
+//map types
+arrow_map_item = {
+    (ident|types)~ "=>" ~ (ident|types)
+}
+colon_map_item= {
+    (ident~":"|"%{}:"|"{}:") ~ (ident|types)
+}
+colon_first_map = {
+    "%{"~"}"|"%{" ~ (ident ~ verbs)? ~ (colon_map_item) ~ 
+    ("," ~ (colon_map_item))* ~
+    ","? ~ "}"
+}
+
+//in an arrow first map, the colon map should appear last
+map_arrangment= {
+    arrow_map_item
+    | arrow_map_item ~ colon_map_item
+}
+arrow_first_map = {
+    "%{"~"}"|"%{" ~ (ident ~ verbs)? ~ (arrow_map_item) ~ 
+    ("," ~ map_arrangment)* ~
+    ("," ~ colon_map_item)* ~
+    ","? ~ "}"
+}
 
 //array types
 array= {
-    "["~"]" | "[" ~ primitive ~ ("," ~ primitive)* ~ ","? ~"]"
+    "["~"]" | "[" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~"]"
 }
 
+//definitions
+
+module= {"defmodule" ~ "do" ~ expr* ~ "end"}
+
+
 // //valid elixir expressions
-primitive = { number 
+types = { number 
     | string 
     | boolean 
     | atom 
     | array 
     | single_quote_string
-    | null  }
-expr = {primitive | assignment | ident}
+    | null
+    | tuple
+    | arrow_first_map
+    | colon_first_map
+  }
+expr = {types | assignment | ident}
 program= _{ SOI ~ expr* ~ EOI}

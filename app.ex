@@ -8,4 +8,14 @@
 # label
 # 'hj\'\\th'
 
-k=nil
+# k? =nil
+# # b=[[a, 2, 3], []]
+{:abc, nil}
+%{k => 33, {}: 40, a: 10, bb: 1}
+%{}
+%{abc | k => 33, "ab"=>10}
+
+
+defmodule  do
+
+end
