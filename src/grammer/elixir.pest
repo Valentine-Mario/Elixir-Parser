@@ -5,14 +5,18 @@ COMMENT = _{ "#" ~ (!"\n" ~ ANY)* }
 verbs = { "<>"| "|>"| ">"| "<" | "+" | "-" | "--" | "++" | "/"| "?" | "|"}
 
 reserver_words= {
-    ("end" | "defmodule" | "do"| 
+    (
+    "end" | "defmodule" | "do"| 
     "when" | "and" | "or" | "not" | "in" | "fn"|
-    "catch"| "rescue" | "after" | "else")
+    "catch"| "rescue" | "after" | "else" 
+    )
     ~ (" "+|"="+)
 }
 //variable identifier
 assignment = {(ident|atom) ~ "=" ~ (types|ident)}
 var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
+module_name= @{(ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_" | ".")*)}
+
 ident = { !reserver_words ~ var_name}
 
 // //primitive type
@@ -39,7 +43,7 @@ single_quote_char = {
 }
 
 boolean = {"true"| "false"}
-atom = {":" ~ var_name }
+atom = ${":" ~ var_name }
 null = {"nil"}
 tuple= {
     "{"~"}"| "{" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~ "}"
@@ -77,7 +81,7 @@ array= {
 
 //definitions
 
-module= {"defmodule" ~ "do" ~ expr* ~ "end"}
+module= {"defmodule" ~ module_name ~ "do" ~ stat ~ "end"}
 
 
 // //valid elixir expressions
@@ -92,5 +96,6 @@ types = { number
     | arrow_first_map
     | colon_first_map
   }
-expr = { assignment | ident }
-program= _{ SOI ~ (expr|types)* ~ EOI}
+expr = {module| assignment }
+stat = { (expr|types|ident)* }
+program= _{ SOI ~ stat ~ EOI}

@@ -16,8 +16,10 @@
 # %{abc | k => 33, "ab"=>10}
 
 # %{"bc"=>12, b: 40, c: 400}
-# defmodule  do
-
+defmodule Name do
+  k=200
+end
+dfk=20
 # ender = :we
 # ande =100
 # # k= :we
