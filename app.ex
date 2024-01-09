@@ -1,26 +1,27 @@
-# 123
-# :abc
-# [1, 3, :abc]
-# "hi"
-# 'hello\u348909\n'
-# "hello\"\n\n\u123467"
-# label = "hello"
-# label
-# 'hj\'\\th'
+123
+:abc
+[1, 3, :abc]
+"hi"
+'hello\u348909\n'
+"hello\"\n\n\u123467"
+label = "hello"
+label
+'hj\'\\th'
 
-# k? =nil
-# # b=[[a, 2, 3], []]
-# {:abc, nil}
-# %{k => 33, {}: 40, a: 10, bb: 1}
-# %{}
-# %{abc | k => 33, "ab"=>10}
+k? =nil
+# b=[[a, 2, 3], []]
+{:abc, nil}
+%{k => 33, {}: 40, a: 10, bb: 1}
+%{}
+%{abc | k => 33, "ab"=>10}
 
-# %{"bc"=>12, b: 40, c: 400}
+%{"bc"=>12, b: 40, c: 400}
 defmodule Name do
   k=200
 end
 dfk=20
-# ender = :we
-# ande =100
-# # k= :we
-# :bbb = aa
+ender = :we
+ande =100
+# k= :we
+:bbb = aa
+%{}
