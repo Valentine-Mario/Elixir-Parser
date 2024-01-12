@@ -9,7 +9,7 @@ label
 'hj\'\\th'
 
 k? =nil
-# b=[[a, 2, 3], []]
+b=[[a, 2, 3], []]
 {:abc, nil}
 %{k => 33, {}: 40, a: 10, bb: 1}
 %{}
@@ -22,6 +22,7 @@ end
 dfk=20
 ender = :we
 ande =100
-# k= :we
+k= :we
 :bbb = aa
-%{}
+{a, b}=34
+%{b: %{a=> 45}}

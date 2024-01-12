@@ -13,7 +13,7 @@ reserver_words= {
     ~ (" "+|"="+)
 }
 //variable identifier
-assignment = {(ident|atom) ~ "=" ~ (types|ident)}
+assignment = {(ident|atom|tuple) ~ "=" ~ (types|ident)}
 var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
 module_name= @{(ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_" | ".")*)}
 
@@ -26,7 +26,7 @@ number = @{
     ~ ("." ~ ASCII_DIGIT*)?
     ~ (^"e" ~ ("+"|"-")? ~ ASCII_DIGIT+)?
 }
-string = ${"\"" ~ inner ~ "\""}
+string = @{"\"" ~ inner ~ "\""}
 inner = @{char*}
 char = {
     !("\"" | "\\") ~ ANY
@@ -34,7 +34,7 @@ char = {
     | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4,})
 }
 
-single_quote_string= ${"'" ~ single_inner ~ "'"}
+single_quote_string= @{"'" ~ single_inner ~ "'"}
 single_inner = @{single_quote_char*}
 single_quote_char = {
     |!("\'"| "\\") ~ ANY
@@ -43,7 +43,7 @@ single_quote_char = {
 }
 
 boolean = {"true"| "false"}
-atom = ${":" ~ var_name }
+atom = @{":" ~ var_name }
 null = {"nil"}
 tuple= {
     "{"~"}"| "{" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~ "}"
@@ -53,8 +53,8 @@ tuple= {
 arrow_map_item = {
     (ident|types)~ "=>" ~ (ident|types)
 }
-colon_map_item= ${
-    (ident~":"|"%{}:"|"{}:") ~ " "+ ~ (ident|types)
+colon_map_item= {
+    (ident|"{}"|"%{}") ~ ":" ~ (ident|types)
 }
 colon_first_map = {
     "%{"~"}"|"%{" ~ (ident ~ verbs)? ~ (colon_map_item) ~ 
