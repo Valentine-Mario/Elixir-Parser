@@ -22,7 +22,7 @@ pub enum Ast<'a> {
 }
 
 #[derive(Clone, Debug)]
-pub enum Verb{
+pub enum Verb {
     Plus,
     Times,
     LessThan,
@@ -72,6 +72,11 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
         Rule::null => Ast::Null,
         Rule::boolean => Ast::Boolean(pair.as_str().parse().unwrap()),
         Rule::array => Ast::Array(
+            pair.into_inner()
+                .map(|x| parse_types(x.into_inner().next().unwrap()))
+                .collect(),
+        ),
+        Rule::tuple => Ast::Tuple(
             pair.into_inner()
                 .map(|x| parse_types(x.into_inner().next().unwrap()))
                 .collect(),
