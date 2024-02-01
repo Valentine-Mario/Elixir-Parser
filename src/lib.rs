@@ -14,11 +14,24 @@ pub enum Ast<'a> {
     Atom(&'a str),
     Null,
     NoOp,
-    Map(Vec<(&'a str, Ast<'a>)>),
+    Map(Option<(Box<Ast<'a>>, Verb)>, Vec<(&'a str, Ast<'a>)>),
     Array(Vec<Ast<'a>>),
     Tuple(Vec<Ast<'a>>),
     Boolean(bool),
     Variable { ident: String, expr: Box<Ast<'a>> },
+}
+
+#[derive(Clone, Debug)]
+pub enum Verb{
+    Plus,
+    Times,
+    LessThan,
+    LargerThan,
+    Equal,
+    Minus,
+    Divide,
+    Concat,
+    ConcatString,
 }
 
 fn flatten(nested: Vec<Vec<Ast>>) -> Vec<Ast> {
