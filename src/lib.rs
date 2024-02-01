@@ -38,15 +38,12 @@ fn flatten(nested: Vec<Vec<Ast>>) -> Vec<Ast> {
     nested.into_iter().flatten().collect()
 }
 
-pub fn parse(source: &str) -> Result<Vec<Ast>, Error<Rule>> {
+pub fn parse(source: &str) -> Result<Vec<Ast>, Box<Error<Rule>>> {
     let mut ast_return = vec![];
     let pairs = ElixirParser::parse(Rule::program, source)?;
     for pair in pairs {
-        match pair.as_rule() {
-            Rule::stat => {
-                ast_return.push(build_ast_from_stat(pair));
-            }
-            _ => {}
+        if pair.as_rule() == Rule::stat {
+            ast_return.push(build_ast_from_stat(pair));
         }
     }
     Ok(flatten(ast_return))
@@ -57,6 +54,8 @@ pub fn build_ast_from_stat(pair: Pair<Rule>) -> Vec<Ast> {
     for item in pair.clone().into_inner() {
         match item.as_rule() {
             Rule::types => ast_return.push(parse_types(item.into_inner().next().unwrap())),
+            Rule::expr => {}
+            Rule::ident => {}
             _ => {}
         }
     }

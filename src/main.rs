@@ -1,5 +1,4 @@
-use elixir_parser::{parse, ElixirParser};
-use pest::Parser;
+use elixir_parser::parse;
 
 fn main() {
     let unparsed_file = std::fs::read_to_string("app.ex").expect("cannot read elixir file");
