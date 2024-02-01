@@ -1,6 +1,6 @@
 123
 :abc
-# [1, 3, :abc]
+[1, 3, :ckc, "hello"]
 "hi"
 'hello\u348909\n'
 "hello\"\n\n\u123467"
@@ -18,9 +18,9 @@ false
 # %{abc | k => 33, "ab"=>10}
 
 # %{"bc"=>12, b: 40, c: 400}
-defmodule Name do
-  k=200
-end
+# defmodule Name do
+#   k=200
+# end
 # dfk=20
 # ender = :we
 # ande =100

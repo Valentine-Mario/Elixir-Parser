@@ -54,9 +54,15 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
     match pair.as_rule() {
         Rule::number => Ast::Number(pair.as_str().parse().unwrap()),
         Rule::atom => Ast::Atom(pair.as_str()),
-        Rule::string=> Ast::String(pair.as_str()),
-        Rule::null=> Ast::Null,
-        Rule::boolean=> Ast::Boolean(pair.as_str().parse().unwrap()),
+        Rule::string => Ast::String(pair.as_str()),
+        Rule::single_quote_string => Ast::String(pair.as_str()),
+        Rule::null => Ast::Null,
+        Rule::boolean => Ast::Boolean(pair.as_str().parse().unwrap()),
+        Rule::array => Ast::Array(
+            pair.into_inner()
+                .map(|x| parse_types(x.into_inner().next().unwrap()))
+                .collect(),
+        ),
         _ => Ast::NoOp,
     }
 }
