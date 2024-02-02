@@ -67,6 +67,7 @@ pub fn parse(source: &str) -> Result<Vec<Ast>, Box<Error<Rule>>> {
             ast_return.push(build_ast_from_stat(pair));
         }
     }
+
     Ok(flatten(ast_return))
 }
 
@@ -75,8 +76,12 @@ pub fn build_ast_from_stat(pair: Pair<Rule>) -> Vec<Ast> {
     for item in pair.into_inner() {
         match item.as_rule() {
             Rule::types => ast_return.push(parse_types(item.into_inner().next().unwrap())),
-            Rule::expr => {}
-            Rule::ident => {}
+            Rule::expr => {
+                println!("expression {:?}", item.as_str())
+            }
+            Rule::ident => {
+                ast_return.push(parse_types(item));
+            }
             _ => {}
         }
     }
@@ -146,7 +151,6 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
                         let key = rule.next().unwrap().as_str();
                         let value =
                             parse_types(rule.next_back().unwrap().into_inner().next().unwrap());
-
                         map_items.push((key, value))
                     }
                     _ => {}
@@ -154,7 +158,31 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
             }
             Ast::Map(merge_map, map_items)
         }
-        Rule::colon_first_map => Ast::Map(None, vec![]),
+        Rule::colon_first_map => {
+            let mut merge_map: Option<(Box<Ast>, Verb)> = None;
+            let mut map_items: Vec<(&str, Ast)> = vec![];
+            let mut inner_rules = pair.into_inner();
+            if inner_rules.len() > 3 {
+                let mut a = inner_rules.clone();
+                if a.next().unwrap().as_rule() == Rule::ident
+                    && a.next().unwrap().as_rule() == Rule::verbs
+                {
+                    let ident = parse_types(inner_rules.next().unwrap());
+                    let verb = parse_verb(inner_rules.next().unwrap());
+                    merge_map = Some((Box::new(ident), verb))
+                }
+            }
+
+            for i in inner_rules {
+                if i.as_rule() == Rule::colon_map_item {
+                    let mut rule = i.into_inner();
+                    let key = rule.next().unwrap().as_str();
+                    let value = parse_types(rule.next_back().unwrap().into_inner().next().unwrap());
+                    map_items.push((key, value))
+                }
+            }
+            Ast::Map(merge_map, map_items)
+        }
         _ => Ast::NoOp,
     }
 }

@@ -17,14 +17,18 @@ false
 # %{}
 %{abc | k => 33, "ab"=>10, "kk"=>200}
 
-%{"bc"=>12, "cdc"=>309, "ak"=> "bbb",b: 40, c: 400}
-# defmodule Name do
-#   k=200
-# end
-# dfk=20
+%{"bc"=>12, "cdc"=>309, "ak"=> "bbb",b: 40, c: 400, bll: %{b: %{a=> 45}, cd: 1000}}
+defmodule Name do
+  k=200
+  p=100
+end
+dfk=20
 # ender = :we
 # ande =100
 # k= :we
 # :bbb = aa
 # {a, b}=34
-%{b: %{a=> 45}, cd: 1000}
+%{abc | b: %{a=> 45}, cd: 1000}
+abc
+fg
+:kola

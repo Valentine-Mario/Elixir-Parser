@@ -8,9 +8,8 @@ reserver_words= {
     (
     "end" | "defmodule" | "do"| 
     "when" | "and" | "or" | "not" | "in" | "fn"|
-    "catch"| "rescue" | "after" | "else" 
+    "catch"| "rescue" | "after" | "else" | "def"
     )
-    ~ (" "+|"="+)
 }
 //variable identifier
 assignment = {(ident|atom|tuple) ~ "=" ~ (types|ident)}
@@ -97,5 +96,5 @@ types = { number
     | colon_first_map
   }
 expr = {module| assignment }
-stat = { (expr|types|ident)* }
+stat = { (expr|types| ident )* }
 program= _{ SOI ~ stat ~ EOI}
