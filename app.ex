@@ -12,15 +12,16 @@ false
 
 # k? =nil
 # b=[[a, 2, 3], []]
-{:abc, nil, 45}
+{:abc, nil, 45, abd}
 # %{k => 33, {}: 40, a: 10, bb: 1}
 # %{}
-%{abc | k => 33, "ab"=>10, "kk"=>200}
+%{abc | k => ender, "ab"=>10, "kk"=>200}
 
-%{"bc"=>12, "cdc"=>309, "ak"=> "bbb",b: 40, c: 400, bll: %{b: %{a=> 45}, cd: 1000}}
+%{"bc"=>12, l=>ol, "cdc"=>309, "ak"=> "bbb",b: cod, c: 400, bll: %{b: %{a=> 45}, cd: 1000}}
 defmodule Name do
   k=200
   p=100
+  ld
 end
 dfk=20
 # ender = :we
@@ -28,8 +29,8 @@ dfk=20
 # k= :we
 # :bbb = aa
 # {a, b}=34
-%{abc | b: %{a=> 45}, cd: 1000}
+%{abc | b: %{a=> 45}, cd: 1000, od: absdd}
 abc
 fg
 :kola
-ex
+ender

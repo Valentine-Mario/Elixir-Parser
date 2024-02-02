@@ -9,14 +9,14 @@ reserver_words= {
     "end" | "defmodule" | "do"| 
     "when" | "and" | "or" | "not" | "in" | "fn"|
     "catch"| "rescue" | "after" | "else" | "def"
-    ) 
+    )
 }
 //variable identifier
 assignment = {(ident|atom|tuple) ~ "=" ~ (types|ident)}
 var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
 module_name= @{(ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_" | ".")*)}
 
-ident = { !reserver_words ~ var_name}
+ident = @{ !(reserver_words ~ !ASCII_ALPHANUMERIC) ~ var_name}
 
 // //primitive type
 number = @{
