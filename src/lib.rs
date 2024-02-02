@@ -97,7 +97,6 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
         Rule::null => Ast::Null,
         Rule::boolean => Ast::Boolean(pair.as_str().parse().unwrap()),
         Rule::ident => Ast::Ident(pair.as_str()),
-        Rule::var_name => Ast::Ident(pair.as_str()),
         Rule::array => Ast::Array(
             pair.into_inner()
                 .map(|x| parse_types(x.into_inner().next().unwrap()))

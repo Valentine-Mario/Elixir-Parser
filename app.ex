@@ -32,3 +32,4 @@ dfk=20
 abc
 fg
 :kola
+ex
