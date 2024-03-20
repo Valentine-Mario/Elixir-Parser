@@ -10,12 +10,12 @@
 nil
 false
 
-# k? =nil
-# b=[[a, 2, 3], []]
-{:abc, nil, 45, abd}
-# %{k => 33, {}: 40, a: 10, bb: 1}
+# # k? =nil
+# # b=[[a, 2, 3], []]
+# {:abc, nil, 45, abd} = hello
+%{k => 33, a: 40, a: 10, bb: 1}
 # %{}
-%{abc | k => ender, "ab"=>10, "kk"=>200}
+# %{abc | k => ender, "ab"=>10, "kk"=>200}
 
 %{"bc"=>12, l=>ol, "cdc"=>309, "ak"=> "bbb",b: cod, c: 400, bll: %{b: %{a=> 45}, cd: 1000}}
 defmodule Name do

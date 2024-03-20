@@ -34,7 +34,7 @@ pub enum Verb {
     ConcatString,
     And,
     Or,
-    Merge,
+    Pipe,
 }
 
 fn flatten(nested: Vec<Vec<Ast>>) -> Vec<Ast> {
@@ -54,7 +54,7 @@ fn parse_verb(pair: Pair<Rule>) -> Verb {
         "<>" => Verb::ConcatString,
         "&&" => Verb::And,
         "||" => Verb::Or,
-        "|" => Verb::Merge,
+        "|" => Verb::Pipe,
         _ => panic!("Unexpected  verb: {}", pair.as_str()),
     }
 }
