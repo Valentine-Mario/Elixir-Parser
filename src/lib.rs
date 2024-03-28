@@ -16,6 +16,7 @@ pub enum Ast<'a> {
     NoOp,
     Map(Option<(Box<Ast<'a>>, Verb)>, Vec<(&'a str, Ast<'a>)>),
     Array(Vec<Ast<'a>>),
+    ArrayOp(Box<Ast<'a>>, Verb, Box<Ast<'a>>),
     Tuple(Vec<Ast<'a>>),
     Boolean(bool),
     Variable { ident: String, expr: Box<Ast<'a>> },
@@ -35,6 +36,7 @@ pub enum Verb {
     And,
     Or,
     Pipe,
+    Stroke,
 }
 
 fn flatten(nested: Vec<Vec<Ast>>) -> Vec<Ast> {
@@ -54,7 +56,8 @@ fn parse_verb(pair: Pair<Rule>) -> Verb {
         "<>" => Verb::ConcatString,
         "&&" => Verb::And,
         "||" => Verb::Or,
-        "|" => Verb::Pipe,
+        "|" => Verb::Stroke,
+        "|>" => Verb::Pipe,
         _ => panic!("Unexpected  verb: {}", pair.as_str()),
     }
 }
@@ -97,26 +100,67 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
         Rule::null => Ast::Null,
         Rule::boolean => Ast::Boolean(pair.as_str().parse().unwrap()),
         Rule::ident => Ast::Ident(pair.as_str()),
+        Rule::array_op => {
+            let first_val: Ast;
+            let second_val: Verb;
+            let third_val: Ast;
+
+            let mut inner = pair.into_inner();
+
+            if inner.clone().next().unwrap().as_rule() == Rule::arr_first {
+                let mut items = inner.next().unwrap().into_inner();
+                let arr_item = items.next().unwrap();
+                first_val = parse_types(arr_item);
+
+                let verb_item = items.next().unwrap();
+                second_val = parse_verb(verb_item);
+
+                let type_item = items.next().unwrap();
+                if type_item.as_rule() == Rule::ident {
+                    third_val = parse_types(type_item)
+                } else {
+                    let item = type_item.into_inner().next().unwrap();
+                    third_val = parse_types(item)
+                }
+            } else {
+                let mut items = inner.next().unwrap().into_inner();
+
+                let type_item = items.next().unwrap();
+                if type_item.as_rule() == Rule::ident {
+                    first_val = parse_types(type_item)
+                } else {
+                    let item = type_item.into_inner().next().unwrap();
+                    first_val = parse_types(item)
+                }
+                let verb_item = items.next().unwrap();
+                second_val = parse_verb(verb_item);
+
+                let array_item = items.next().unwrap();
+                third_val = parse_types(array_item);
+            }
+
+            Ast::ArrayOp(Box::new(first_val), second_val, Box::new(third_val))
+        }
         Rule::array => Ast::Array(
             pair.into_inner()
                 .map(|x| {
-                    if x.as_rule()==Rule::ident{
+                    if x.as_rule() == Rule::ident {
                         return parse_types(x);
-                    }else{
+                    } else {
                         parse_types(x.into_inner().next().unwrap())
                     }
-    })
+                })
                 .collect(),
         ),
         Rule::tuple => Ast::Tuple(
             pair.into_inner()
                 .map(|x| {
-                    if x.as_rule()==Rule::ident{
+                    if x.as_rule() == Rule::ident {
                         return parse_types(x);
-                    }else{
+                    } else {
                         parse_types(x.into_inner().next().unwrap())
                     }
-    })
+                })
                 .collect(),
         ),
         Rule::arrow_first_map => {
@@ -139,48 +183,47 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
                     Rule::arrow_map_item => {
                         let mut rule = i.into_inner();
                         let key = rule.next().unwrap().as_str();
-                        let value: Ast;
-                        if rule.clone().next().unwrap().as_rule() == Rule::ident{
-                            value= parse_types(rule.next().unwrap())
-                        }else{
-                            value = parse_types(rule.next().unwrap().into_inner().next().unwrap());
+                        let value: Ast = if rule.clone().next().unwrap().as_rule() == Rule::ident {
+                            parse_types(rule.next().unwrap())
+                        } else {
+                            parse_types(rule.next().unwrap().into_inner().next().unwrap())
+                        };
 
-                        }
                         map_items.push((key, value))
                     }
                     Rule::map_arrangment => {
                         let rule = i.into_inner();
                         for k in rule {
                             let key = k.clone().into_inner().next().unwrap().as_str();
-                            let value: Ast;
-                            if k.clone().into_inner().next_back().unwrap().as_rule() == Rule::ident{
-                                value=parse_types(k.into_inner().next_back().unwrap());
-                            }else{
-                                value= parse_types(
-                                    k.into_inner()
-                                        .next_back()
-                                        .unwrap()
-                                        .into_inner()
-                                        .next()
-                                        .unwrap(),
-                                );
-                            }
-                            
+                            let value: Ast =
+                                if k.clone().into_inner().next_back().unwrap().as_rule()
+                                    == Rule::ident
+                                {
+                                    parse_types(k.into_inner().next_back().unwrap())
+                                } else {
+                                    parse_types(
+                                        k.into_inner()
+                                            .next_back()
+                                            .unwrap()
+                                            .into_inner()
+                                            .next()
+                                            .unwrap(),
+                                    )
+                                };
+
                             map_items.push((key, value))
                         }
                     }
                     Rule::colon_map_item => {
                         let mut rule = i.into_inner();
                         let key = rule.next().unwrap().as_str();
-                        let value: Ast;
+                        let value: Ast =
+                            if rule.clone().next_back().unwrap().as_rule() == Rule::ident {
+                                parse_types(rule.next_back().unwrap())
+                            } else {
+                                parse_types(rule.next_back().unwrap().into_inner().next().unwrap())
+                            };
 
-                        if rule.clone().next_back().unwrap().as_rule()==Rule::ident{
-                            value= parse_types(rule.next_back().unwrap())
-                        }else{
-                        value =
-                            parse_types(rule.next_back().unwrap().into_inner().next().unwrap());
-                        }
-                        
                         map_items.push((key, value))
                     }
                     _ => {}
@@ -207,12 +250,10 @@ pub fn parse_types(pair: Pair<Rule>) -> Ast {
                 if i.as_rule() == Rule::colon_map_item {
                     let mut rule = i.into_inner();
                     let key = rule.next().unwrap().as_str();
-                    let value: Ast;
-                    if rule.clone().next_back().unwrap().as_rule()==Rule::ident{
-                        value= parse_types(rule.next_back().unwrap())
-                    }else{
-                    value =
-                        parse_types(rule.next_back().unwrap().into_inner().next().unwrap());
+                    let value: Ast = if rule.clone().next_back().unwrap().as_rule() == Rule::ident {
+                        parse_types(rule.next_back().unwrap())
+                    } else {
+                        parse_types(rule.next_back().unwrap().into_inner().next().unwrap())
                     };
                     map_items.push((key, value))
                 }

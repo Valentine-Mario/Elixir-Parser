@@ -2,7 +2,8 @@ WHITESPACE= _{" "| "\t" | "\r"| "\n"}
 COMMENT = _{ "#" ~ (!"\n" ~ ANY)* }
 
 //verbs
-verbs = { "<>"| "|>"| ">"| "<" | "+" | "-" | "--" | "++" | "/"| "?" | "|"}
+verbs = { "<>"| "|>"| ">"| "<" | "+" | "-" | 
+        "--" | "++" | "/"| "?" | "|" | "&&" | "||"}
 
 reserver_words= {
     (
@@ -12,11 +13,12 @@ reserver_words= {
     )
 }
 //variable identifier
-assignment = {(ident|atom|tuple) ~ "=" ~ (types|ident)}
+assignment = {(ident|atom|tuple|head_tail) ~ "=" ~ (types|ident)}
 var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
 module_name= @{(ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_" | ".")*)}
 
 ident = @{ !(reserver_words ~ !ASCII_ALPHANUMERIC) ~ var_name}
+head_tail = {"[" ~ (ident) ~ verbs ~ (array | ident | head_tail) ~ "]" }
 
 // //primitive type
 number = @{
@@ -73,9 +75,12 @@ arrow_first_map = {
     ","? ~ "}"
 }
 
+arr_first= { array ~ verbs ~ (types | ident) }
+arr_last = { (types | ident) ~ verbs ~ array }
+array_op = { "[" ~ (arr_first | arr_last) ~ "]" }
 //array types
 array= {
-    "["~"]" | "[" ~ (types | ident) ~ ("," ~ (types|ident))* ~ ","? ~"]"
+    "["~"]" | "[" ~ (types | ident ) ~ ("," ~ (types|ident))* ~ ","? ~"]"
 }
 
 //definitions
@@ -94,6 +99,8 @@ types = { number
     | tuple
     | arrow_first_map
     | colon_first_map
+    | array_op
+    
   }
 expr = {module| assignment }
 stat = { (expr|types| ident )* }
