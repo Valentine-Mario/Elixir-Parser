@@ -18,7 +18,7 @@ var_name= @{(ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "?")*)}
 module_name= @{(ASCII_ALPHA_UPPER ~ (ASCII_ALPHANUMERIC | "_" | ".")*)}
 
 ident = @{ !(reserver_words ~ !ASCII_ALPHANUMERIC) ~ var_name}
-head_tail = {"[" ~ (ident) ~ verbs ~ (array | ident | head_tail) ~ "]" }
+head_tail = {"[" ~ (ident | types) ~ verbs ~ (array | types | ident | head_tail) ~ "]" }
 
 // //primitive type
 number = @{
@@ -75,9 +75,13 @@ arrow_first_map = {
     ","? ~ "}"
 }
 
-arr_first= { array ~ verbs ~ (types | ident) }
-arr_last = { (types | ident) ~ verbs ~ array }
-array_op = { "[" ~ (arr_first | arr_last) ~ "]" }
+array_op = { "[" ~ 
+    (types | ident | array_op) ~ 
+    verbs ~ 
+    (types | ident | array_op) ~ 
+    "]" 
+}
+
 //array types
 array= {
     "["~"]" | "[" ~ (types | ident ) ~ ("," ~ (types|ident))* ~ ","? ~"]"
